@@ -1,72 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Station Selection Form</title>
+  <meta charset="UTF-8" />
+  <title>Station Search</title>
+  <style>
+    /* Add your CSS styles here, including styles for autocomplete */
+    #autocomplete-list {
+      border: 1px solid #d4d4d4;
+      max-height: 150px;
+      overflow-y: auto;
+      position: absolute;
+      background-color: #fff;
+      z-index: 99;
+      width: calc(100% - 20px);
+    }
+    #autocomplete-list div {
+      padding: 10px;
+      cursor: pointer;
+    }
+    #autocomplete-list div:hover {
+      background-color: #e9e9e9;
+    }
+  </style>
 </head>
 <body>
-<h2>Station Finder</h2>
+<h2>Station Search</h2>
 <form id="stationForm">
-  <label for="numberInput">Choose a number (1-50):</label>
-  <input type="number" id="numberInput" name="numberInput" min="1" max="50" required />
-  <br><br>
-  <label for="stationSelect">Select a station:</label>
-  <select id="stationSelect" name="stationSelect" required>
-    <option value="">Loading stations...</option>
-  </select>
-  <br><br>
+  <!-- your other form elements -->
+  <label for="stationSearch">Search for a station:</label>
+  <input type="text" id="stationSearch" placeholder="Type to search..." required />
+  <div id="autocomplete-list"></div>
   <button type="submit">Submit</button>
 </form>
-<p id="status"></p>
 
 <script>
-// Replace these URLs with your hosted endpoints
-const stationsUrl = "https://script.google.com/macros/s/AKfycbyTC8RnUx-ye_QDPyt5AbqnML2O003-wJikeHInjz-T3KYH2Lz5jAuAMMiiIcmiCMKV/exec"; 
-const submitUrl = "https://script.google.com/macros/s/AKfycbyTC8RnUx-ye_QDPyt5AbqnML2O003-wJikeHInjz-T3KYH2Lz5jAuAMMiiIcmiCMKV/exec"; 
+// Your JavaScript code here
+const stationsUrl = "https://yourhost.com/stations"; // your station data URL
+let stations = [];
 
-// Load stations
 fetch(stationsUrl)
   .then(response => response.json())
   .then(data => {
-    const select = document.getElementById('stationSelect');
-    select.innerHTML = '';
-    data.stations.forEach(station => {
-      const option = document.createElement('option');
-      option.value = station;
-      option.innerText = station;
-      select.appendChild(option);
-    });
-  })
-  .catch(err => {
-    document.getElementById('stationSelect').innerHTML = '<option>Error loading stations</option>';
-    console.error('Error fetching stations:', err);
+    stations = data.stations;
   });
 
-// Submit handler
-document.getElementById('stationForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const number = document.getElementById('numberInput').value;
-  const station = document.getElementById('stationSelect').value;
+const input = document.getElementById('stationSearch');
+const listContainer = document.getElementById('autocomplete-list');
 
-  if (!number || !station) {
-    alert('Please fill out all fields.');
-    return;
-  }
+input.addEventListener('input', function() {
+  const val = this.value.toLowerCase();
+  listContainer.innerHTML = '';
 
-  fetch(submitUrl, {
-    method: 'POST',
-    body: JSON.stringify({ number: number, station: station }),
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.text())
-  .then(msg => {
-    document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
-  })
-  .catch(err => {
-    document.getElementById('status').innerText = 'Error submitting your entry.';
-    console.error('Error submitting:', err);
+  if (!val) return;
+
+  const filtered = stations.filter(station => station.toLowerCase().includes(val));
+
+  filtered.forEach(station => {
+    const item = document.createElement('div');
+    item.innerText = station;
+    item.addEventListener('click', () => {
+      input.value = station;
+      listContainer.innerHTML = '';
+    });
+    listContainer.appendChild(item);
   });
 });
 </script>
+
 </body>
 </html>
