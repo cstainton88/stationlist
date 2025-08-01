@@ -79,9 +79,6 @@ const submitUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQ
 let stations = [];
 let highlightedIndex = -1;
 
-// Show loading indicator
-document.getElementById('status').innerText = 'Loading stations...';
-
 // Enhanced error handling for fetching station list
 fetch(stationsUrl)
   .then(response => {
@@ -213,3 +210,4 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script>
 </body>
 </html>
+
