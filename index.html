@@ -87,7 +87,6 @@ fetch(stationsUrl)
   })
   .then(data => {
     stations = data.stations || [];
-    document.getElementById('status').innerText = ''; // Clear loading message
   })
   .catch(err => {
     console.error('Error loading stations:', err);
@@ -210,4 +209,5 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script>
 </body>
 </html>
+
 
