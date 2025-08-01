@@ -73,10 +73,11 @@
 
 <script>
 // Replace these URLs with your hosted endpoints
-const stationsUrl = "https://script.google.com/macros/s/AKfycbyDvZ8nzPoTd8Wb0LB5p9ESBilDAWyq_Kg3uQ2zi-1maUeZg7j5lXdh4-xIBD7muLUA/exec";
-const submitUrl = "https://script.google.com/macros/s/AKfycbyDvZ8nzPoTd8Wb0LB5p9ESBilDAWyq_Kg3uQ2zi-1maUeZg7j5lXdh4-xIBD7muLUA/exec";
+const stationsUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec";
+const submitUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec";
 
 let stations = [];
+let stationsLoaded = false;
 let highlightedIndex = -1;
 
 // Enhanced error handling for fetching station list
@@ -87,6 +88,8 @@ fetch(stationsUrl)
   })
   .then(data => {
     stations = data.stations || [];
+    stationsLoaded = true;
+    console.log('Stations loaded:', stations.length); // Debug log
   })
   .catch(err => {
     console.error('Error loading stations:', err);
@@ -168,7 +171,7 @@ document.addEventListener('click', function(e) {
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const number = document.getElementById('numberInput').value;
+    const number = document.getElementById('numberInput').value;
   const station = document.getElementById('stationSearch').value;
 
   if (!number || !station) {
@@ -176,9 +179,17 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // Station validation - check if selected station exists in the list
-  const isValidStation = stations.includes(station);
+  // Check if stations are loaded before validating
+  if (!stationsLoaded) {
+    alert('Station data is still loading. Please wait a moment and try again.');
+    return;
+  }
+
+  // Station validation - check if selected station exists in the list (case-insensitive)
+  const isValidStation = stations.some(s => s.toLowerCase() === station.toLowerCase());
   if (!isValidStation) {
+    console.log('Entered station:', station); // Debug log
+    console.log('Available stations:', stations); // Debug log
     alert('Please select a valid station from the suggestions.');
     return;
   }
@@ -206,9 +217,10 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
     console.error('Error submitting:', err);
   });
 });
-</script>
+</script> 
 </body>
 </html>
+
 
 
 
