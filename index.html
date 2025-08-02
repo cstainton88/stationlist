@@ -167,7 +167,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Enhanced form submission WITHOUT station validation
+// Enhanced form submission WITHOUT strict station validation
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
@@ -194,7 +194,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
   })
   .then(msg => {
     document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
-    // Optional: Reset form after successful submission
+    // Reset form after successful submission
     document.getElementById('stationForm').reset();
   })
   .catch(err => {
@@ -205,6 +205,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script> 
 </body>
 </html>
+
 
 
 
