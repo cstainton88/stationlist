@@ -72,27 +72,35 @@
 <p id="status"></p>
 
 <script>
-const submitUrl = "https://script.google.com/macros/s/AKfycbwXHbUmTv02KjT6D6U0r-GL2tAi45Hd6zCnZF2dYeGdv-z2LwbOJNBSnx04MRIVnz0B/exec";
+const submitUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec";
 
 let stations = [];
 let stationsLoaded = false;
 let highlightedIndex = -1;
 
-// JSONP function to handle station data
-function handleStations(data) {
+// JSONP callback function - must be in global scope
+window.handleStations = function(data) {
   stations = data.stations || [];
   stationsLoaded = true;
   console.log('Stations loaded via JSONP:', stations.length);
-}
+  
+  // Clean up the script tag
+  const scripts = document.querySelectorAll('script[src*="callback=handleStations"]');
+  scripts.forEach(script => script.remove());
+};
 
 // Load stations using JSONP
 function loadStations() {
   const script = document.createElement('script');
-  script.src = submitUrl + '?callback=handleStations&' + Date.now();
+  script.src = submitUrl + '?callback=handleStations&t=' + Date.now();
+  script.onerror = function() {
+    console.error('Failed to load stations via JSONP');
+    document.getElementById('status').innerText = 'Error loading station data.';
+  };
   document.head.appendChild(script);
 }
 
-// Start loading stations
+// Start loading stations when page loads
 loadStations();
 
 // Autocomplete logic
@@ -104,7 +112,7 @@ input.addEventListener('input', function() {
   listContainer.innerHTML = '';
   highlightedIndex = -1;
 
-  if (!val) return;
+  if (!val || !stationsLoaded) return;
 
   const filtered = stations.filter(station => station.toLowerCase().includes(val));
 
@@ -163,7 +171,7 @@ function updateHighlight(items) {
   });
 }
 
-// Form submission without strict validation
+// Form submission
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
@@ -171,7 +179,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
   const station = document.getElementById('stationSearch').value;
 
   if (!number || !station) {
-    alert('Please fill out all fields.');
+        alert('Please fill out all fields.');
     return;
   }
 
@@ -198,6 +206,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
   });
 });
 </script>
+
 
 
 // Keyboard navigation for autocomplete
@@ -282,6 +291,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script> 
 </body>
 </html>
+
 
 
 
