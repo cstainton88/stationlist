@@ -167,30 +167,15 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Enhanced form submission with validation
+// Enhanced form submission WITHOUT station validation
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-    const number = document.getElementById('numberInput').value;
+  const number = document.getElementById('numberInput').value;
   const station = document.getElementById('stationSearch').value;
 
   if (!number || !station) {
     alert('Please fill out all fields.');
-    return;
-  }
-
-  // Check if stations are loaded before validating
-  if (!stationsLoaded) {
-    alert('Station data is still loading. Please wait a moment and try again.');
-    return;
-  }
-
-  // Station validation - check if selected station exists in the list (case-insensitive)
-  const isValidStation = stations.some(s => s.toLowerCase() === station.toLowerCase());
-  if (!isValidStation) {
-    console.log('Entered station:', station); // Debug log
-    console.log('Available stations:', stations); // Debug log
-    alert('Please select a valid station from the suggestions.');
     return;
   }
 
@@ -220,6 +205,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script> 
 </body>
 </html>
+
 
 
 
