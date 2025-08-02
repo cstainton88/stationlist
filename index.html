@@ -119,7 +119,86 @@ input.addEventListener('input', function() {
   });
 });
 
-// Close autocomplete
+// Close autocomplete when clicking outside
+document.addEventListener('click', function(e) {
+  if (!input.contains(e.target) && !listContainer.contains(e.target)) {
+    listContainer.innerHTML = '';
+    highlightedIndex = -1;
+  }
+});
+
+// Keyboard navigation for autocomplete
+input.addEventListener('keydown', function(e) {
+  const items = listContainer.querySelectorAll('div');
+  
+  if (e.key === 'Escape') {
+    listContainer.innerHTML = '';
+    highlightedIndex = -1;
+    return;
+  }
+  
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+    updateHighlight(items);
+  }
+  
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    highlightedIndex = Math.max(highlightedIndex - 1, -1);
+    updateHighlight(items);
+  }
+  
+  if (e.key === 'Enter' && highlightedIndex >= 0) {
+    e.preventDefault();
+    input.value = items[highlightedIndex].innerText;
+    listContainer.innerHTML = '';
+    highlightedIndex = -1;
+  }
+});
+
+function updateHighlight(items) {
+  items.forEach((item, index) => {
+    item.classList.toggle('highlighted', index === highlightedIndex);
+  });
+}
+
+// Form submission without strict validation
+document.getElementById('stationForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const number = document.getElementById('numberInput').value;
+  const station = document.getElementById('stationSearch').value;
+
+  if (!number || !station) {
+    alert('Please fill out all fields.');
+    return;
+  }
+
+  // Show submitting status
+  document.getElementById('status').innerText = 'Submitting...';
+
+  // Submit form
+  fetch(submitUrl, {
+    method: 'POST',
+    body: JSON.stringify({ number: number, station: station }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Submission failed');
+    return response.text();
+  })
+  .then(msg => {
+    document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
+    document.getElementById('stationForm').reset();
+  })
+  .catch(err => {
+    document.getElementById('status').innerText = 'Error submitting your entry. Please try again.';
+    console.error('Error submitting:', err);
+  });
+});
+</script>
+
 
 // Keyboard navigation for autocomplete
 input.addEventListener('keydown', function(e) {
@@ -203,6 +282,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script> 
 </body>
 </html>
+
 
 
 
