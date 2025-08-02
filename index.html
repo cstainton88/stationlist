@@ -72,35 +72,32 @@
 <p id="status"></p>
 
 <script>
-// Replace these URLs with your hosted endpoints
-const stationsUrl = "https://script.google.com/macros/s/AKfycbwXHbUmTv02KjT6D6U0r-GL2tAi45Hd6zCnZF2dYeGdv-z2LwbOJNBSnx04MRIVnz0B/exec";
 const submitUrl = "https://script.google.com/macros/s/AKfycbwXHbUmTv02KjT6D6U0r-GL2tAi45Hd6zCnZF2dYeGdv-z2LwbOJNBSnx04MRIVnz0B/exec";
 
 let stations = [];
 let stationsLoaded = false;
 let highlightedIndex = -1;
 
-// Enhanced error handling for fetching station list
-fetch(stationsUrl)
-  .then(response => {
-    if (!response.ok) throw new Error('Failed to fetch stations');
-    return response.json();
-  })
-  .then(data => {
-    stations = data.stations || [];
-    stationsLoaded = true;
-    console.log('Stations loaded:', stations.length); // Debug log
-  })
-  .catch(err => {
-    console.error('Error loading stations:', err);
-    document.getElementById('status').innerText = 'Error loading station data. Please refresh the page.';
-  });
+// JSONP function to handle station data
+function handleStations(data) {
+  stations = data.stations || [];
+  stationsLoaded = true;
+  console.log('Stations loaded via JSONP:', stations.length);
+}
 
-// Autocomplete logic with enhanced UX
+// Load stations using JSONP
+function loadStations() {
+  const script = document.createElement('script');
+  script.src = submitUrl + '?callback=handleStations&' + Date.now();
+  document.head.appendChild(script);
+}
+
+// Start loading stations
+loadStations();
+
+// Autocomplete logic
 const input = document.getElementById('stationSearch');
-const listContainer = document.createElement('div');
-listContainer.id = 'autocomplete-list';
-input.parentNode.insertBefore(listContainer, input.nextSibling);
+const listContainer = document.getElementById('autocomplete-list');
 
 input.addEventListener('input', function() {
   const val = this.value.toLowerCase();
@@ -114,7 +111,6 @@ input.addEventListener('input', function() {
   filtered.forEach((station, index) => {
     const item = document.createElement('div');
     item.innerText = station;
-    item.setAttribute('data-index', index);
     item.addEventListener('click', () => {
       input.value = station;
       listContainer.innerHTML = '';
@@ -122,6 +118,8 @@ input.addEventListener('input', function() {
     listContainer.appendChild(item);
   });
 });
+
+// Close autocomplete
 
 // Keyboard navigation for autocomplete
 input.addEventListener('keydown', function(e) {
@@ -205,6 +203,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script> 
 </body>
 </html>
+
 
 
 
