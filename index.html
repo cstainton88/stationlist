@@ -30,14 +30,19 @@
   button:hover {
     background-color: #005a87;
   }
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
   #status {
     margin-top: 15px;
     font-weight: bold;
   }
-  
-  /* Hide the iframe */
-  #hidden-iframe {
-    display: none;
+  .success {
+    color: #28a745;
+  }
+  .error {
+    color: #dc3545;
   }
   
   @media (max-width: 480px) {
@@ -55,12 +60,7 @@
 <body>
 <h2>Station Finder</h2>
 
-<!-- Use a regular form that submits to Google Apps Script -->
-<form id="stationForm" 
-      action="https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec" 
-      method="post" 
-      target="hidden-iframe">
-  
+<form id="stationForm">
   <label for="numberInput">Choose a number (1-50):</label>
   <input type="number" id="numberInput" name="number" min="1" max="50" required />
 
@@ -71,31 +71,59 @@
   <button type="submit">Submit</button>
 </form>
 
-<!-- Hidden iframe to capture the response -->
-<iframe id="hidden-iframe" name="hidden-iframe"></iframe>
-
 <p id="status"></p>
 
 <script>
-// Handle form submission
-document.getElementById('stationForm').addEventListener('submit', function(e) {
+// Replace with your actual Google Apps Script URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec';
+
+document.getElementById('stationForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); // Prevent default form submission
+  
   const number = document.getElementById('numberInput').value;
   const station = document.getElementById('stationSearch').value;
+  const submitButton = document.querySelector('button[type="submit"]');
+  const statusElement = document.getElementById('status');
 
   if (!number || !station) {
-    e.preventDefault();
-    alert('Please fill out all fields.');
+    statusElement.innerHTML = '<span class="error">Please fill out all fields.</span>';
     return;
   }
 
-  // Show submitting status
-  document.getElementById('status').innerText = 'Submitting...';
-  
-  // Set a timeout to show success message
-  setTimeout(function() {
-    document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
-    document.getElementById('stationForm').reset();
-  }, 2000);
+  // Disable button and show loading status
+  submitButton.disabled = true;
+  submitButton.textContent = 'Submitting...';
+  statusElement.innerHTML = 'Submitting your request...';
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        number: number,
+        station: station
+      })
+    });
+
+    const result = await response.text();
+    
+    if (result.includes('Success')) {
+      statusElement.innerHTML = '<span class="success">Thank you! Your entry has been recorded.</span>';
+      document.getElementById('stationForm').reset();
+    } else {
+      statusElement.innerHTML = '<span class="error">Error: ' + result + '</span>';
+    }
+    
+  } catch (error) {
+    statusElement.innerHTML = '<span class="error">Error submitting form. Please try again.</span>';
+    console.error('Error:', error);
+  } finally {
+    // Re-enable button
+    submitButton.disabled = false;
+    submitButton.textContent = 'Submit';
+  }
 });
 </script>
 </body>
