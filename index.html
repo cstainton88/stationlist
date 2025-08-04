@@ -65,7 +65,7 @@
 <p id="status"></p>
 
 <script>
-const scriptUrl = "https://script.google.com/macros/s/AKfycbxmmgeS4ouTdpiVPCwFzRmjnMFBW5BRkBcnO6C4WcC1QO6ZDkkx-KDNYDo_oU5geMYv/exec";
+const scriptUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec";
 
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -81,20 +81,19 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
   // Show submitting status
   document.getElementById('status').innerText = 'Submitting...';
   
-  // Create form data
-  const formData = new FormData();
-  formData.append('number', number);
-  formData.append('station', station);
+  // Create URL-encoded data (same format as before)
+  const formData = `number=${encodeURIComponent(number)}&station=${encodeURIComponent(station)}`;
   
-  // Submit using fetch without expecting a response
+  // Submit using fetch with URL-encoded data
   fetch(scriptUrl, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
     body: formData,
-    mode: 'no-cors' // This bypasses CORS but we won't get a response
+    mode: 'no-cors'
   })
   .then(() => {
-    // Since we're using no-cors, we won't get the actual response
-    // but if we reach here, the request was sent
     document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
     document.getElementById('stationForm').reset();
   })
@@ -107,5 +106,3 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
 </script>
 </body>
 </html>
-
-
