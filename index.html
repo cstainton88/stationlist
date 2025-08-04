@@ -71,6 +71,7 @@
 <p id="status"></p>
 
 <script>
+// Simple validation before form submission
 document.getElementById('stationForm').addEventListener('submit', function(e) {
   const number = document.getElementById('numberInput').value;
   const station = document.getElementById('stationSearch').value;
@@ -81,7 +82,7 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // Show submitting status
+  // Show submitting status (form will redirect after submission)
   document.getElementById('status').innerText = 'Submitting...';
   document.querySelector('button[type="submit"]').disabled = true;
 });
