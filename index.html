@@ -198,7 +198,7 @@
   <h1>Station Maintenance</h1>
 
   <form id="stationForm" 
-      action="https://script.google.com/macros/s/AKfycbyfjbkBxy_vN7GuMRAh9sVwb90mhooSYDoysm6D2S28SbSqR6QuMD7H5oleOrg4U2PL/exec" 
+      action="https://script.google.com/macros/s/AKfycbzIKZb4qy2nCchQRV3fQX5h3IzAqoq3YIrOT84RTvdZ95TC16-JvJUkIeHdMZ7hvRVH/exec" 
       method="post">
   
   <div class="form-group">
@@ -235,7 +235,7 @@ let STATIONS = [];
 // Fetch stations from Google Sheets on page load
 async function loadStations() {
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbyfjbkBxy_vN7GuMRAh9sVwb90mhooSYDoysm6D2S28SbSqR6QuMD7H5oleOrg4U2PL/exec?action=getStations');
+    const response = await fetch('https://script.google.com/macros/s/AKfycbzIKZb4qy2nCchQRV3fQX5h3IzAqoq3YIrOT84RTvdZ95TC16-JvJUkIeHdMZ7hvRVH/exec');
     STATIONS = await response.json();
     console.log('Loaded stations:', STATIONS.length);
   } catch (error) {
@@ -359,6 +359,7 @@ window.addEventListener('pageshow', function(e) {
 
 </body>
 </html>
+
 
 
 
