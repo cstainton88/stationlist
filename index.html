@@ -33,7 +33,11 @@
   #status {
     margin-top: 15px;
     font-weight: bold;
-    color: #007cba;
+  }
+  
+  /* Hide the iframe */
+  #hidden-iframe {
+    display: none;
   }
   
   @media (max-width: 480px) {
@@ -51,7 +55,12 @@
 <body>
 <h2>Station Finder</h2>
 
-<form id="stationForm">
+<!-- Use a regular form that submits to Google Apps Script -->
+<form id="stationForm" 
+      action="https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec" 
+      method="post" 
+      target="hidden-iframe">
+  
   <label for="numberInput">Choose a number (1-50):</label>
   <input type="number" id="numberInput" name="number" min="1" max="50" required />
 
@@ -62,18 +71,19 @@
   <button type="submit">Submit</button>
 </form>
 
+<!-- Hidden iframe to capture the response -->
+<iframe id="hidden-iframe" name="hidden-iframe"></iframe>
+
 <p id="status"></p>
 
 <script>
-const scriptUrl = "https://script.google.com/macros/s/AKfycbz5ZHMrkFqii18NIo_YhQFppw_cE1l5iQrO4ID13lfw5UGfAQ0xfWJGhy57y5UmTw9W/exec";
-
+// Handle form submission
 document.getElementById('stationForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
   const number = document.getElementById('numberInput').value;
   const station = document.getElementById('stationSearch').value;
 
   if (!number || !station) {
+    e.preventDefault();
     alert('Please fill out all fields.');
     return;
   }
@@ -81,27 +91,11 @@ document.getElementById('stationForm').addEventListener('submit', function(e) {
   // Show submitting status
   document.getElementById('status').innerText = 'Submitting...';
   
-  // Create URL-encoded data (same format as before)
-  const formData = `number=${encodeURIComponent(number)}&station=${encodeURIComponent(station)}`;
-  
-  // Submit using fetch with URL-encoded data
-  fetch(scriptUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: formData,
-    mode: 'no-cors'
-  })
-  .then(() => {
+  // Set a timeout to show success message
+  setTimeout(function() {
     document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
     document.getElementById('stationForm').reset();
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('status').innerText = 'Thank you! Your entry has been recorded.';
-    document.getElementById('stationForm').reset();
-  });
+  }, 2000);
 });
 </script>
 </body>
