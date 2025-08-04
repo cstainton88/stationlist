@@ -341,10 +341,6 @@ function setupAutocomplete() {
   document.addEventListener('click', function(e) {
     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.style.display = 'none';
-       // Hide dropdown when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = 'none';
     }
   });
 
@@ -375,7 +371,7 @@ function setupAutocomplete() {
     submitButton.innerHTML = '<span class="loading-dots">Submitting</span>';
     showStatus('Submitting your request...', 'loading');
 
-    // After form submits to hidden iframe, redirect after a delay
+        // After form submits to hidden iframe, redirect after a delay
     setTimeout(function() {
       const params = new URLSearchParams({
         success: 'true',
@@ -386,7 +382,7 @@ function setupAutocomplete() {
       window.location.href = 'https://cstainton88.github.io/stationlist/success.html?' + params.toString();
     }, 2000); // 2 second delay to allow form submission
   });
-}
+} // MISSING CLOSING BRACE WAS HERE
 
 function showStatus(message, type) {
   const statusElement = document.getElementById('status');
@@ -421,6 +417,7 @@ window.addEventListener('pageshow', function(e) {
 
 </body>
 </html>
+
 
 
 
