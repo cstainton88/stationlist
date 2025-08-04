@@ -20,6 +20,7 @@
     justify-content: center;
     padding: 20px;
   }
+
   .form-container {
     background: #4CAF50;
     border-radius: 20px;
@@ -36,14 +37,13 @@
   }
 
   .logo {
-  max-width: 60%;
-  width: auto;
-  height: auto;
-  max-height: 80px;
-  border-radius: 8px;
-}
+    max-width: 60%;
+    width: auto;
+    height: auto;
+    max-height: 80px;
+    border-radius: 8px;
+  }
 
- 
   h1 {
     color: white;
     font-size: 24px;
@@ -54,7 +54,9 @@
     text-transform: uppercase;
   }
 
+  /* FIXED: Only one .form-group definition */
   .form-group {
+    position: relative;
     margin-bottom: 25px;
   }
 
@@ -109,14 +111,14 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   }
 
-  button:disabled {
+    button:disabled {
     background: #81C784;
     cursor: not-allowed;
     transform: none;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-    #status {
+  #status {
     margin-top: 20px;
     padding: 15px;
     border-radius: 8px;
@@ -143,57 +145,50 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
   }
 
- /* Add this CSS after your existing styles, before the closing </style> tag */
+  /* Autocomplete dropdown styles */
+  .dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+  }
 
-/* Autocomplete dropdown styles */
-.dropdown-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 1000;
-  display: none;
-}
+  .dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+  }
 
-.form-group {
-  position: relative;
-  margin-bottom: 25px;
-}
+  .dropdown-item:hover,
+  .dropdown-item.highlighted {
+    background-color: #f8f9fa;
+  }
 
-.dropdown-item {
-  padding: 12px 15px;
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s;
-}
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
 
-.dropdown-item:hover,
-.dropdown-item.highlighted {
-  background-color: #f8f9fa;
-}
+  .error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
 
-.dropdown-item:last-child {
-  border-bottom: none;
-}
+  .input-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2) !important;
+  }
 
-.error-message {
-  color: #dc3545;
-  font-size: 12px;
-  margin-top: 5px;
-  display: none;
-}
-
-.input-error {
-  border-color: #dc3545 !important;
-  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2) !important;
-}
- 
   /* Mobile responsiveness */
   @media (max-width: 480px) {
     body {
@@ -213,7 +208,7 @@
     input[type="number"],
     input[type="text"] {
       padding: 12px;
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
     }
     
     button {
@@ -235,8 +230,9 @@
     75% { content: '...'; }
     100% { content: ''; }
   }
- 
 </style>
+    
+ 
 </head>
 <body>
 
@@ -419,6 +415,7 @@ window.addEventListener('pageshow', function(e) {
 
 </body>
 </html>
+
 
 
 
