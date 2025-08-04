@@ -223,98 +223,26 @@
 <script>
 let STATIONS = [];
 
-// Fetch stations from Google Sheets on page load
 async function loadStations() {
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxluH0-WtETjAi2hCe26RMKOFDMwc6GiZ9v6eAl28TTiU7qdVUyr7dlr-zKDI7um_uJ/exec');
-    STATIONS = await response.json();
+    const response = await fetch('https://github.com/cstainton88/stationlist/blob/main/station%20names%20for%20app%202025.csv');
+    const csvText = await response.text();
+    const lines = csvText.split('\n');
+    STATIONS = lines.slice(1) // Skip header
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
     console.log('Loaded stations:', STATIONS.length);
   } catch (error) {
     console.error('Error loading stations:', error);
-    // Fallback to a few basic stations if loading fails
-    STATIONS = ['Station A', 'Station B', 'Station C'];
+    // Fallback stations if loading fails
+    STATIONS = [
+      'Adelaide St W / Widmer St',
+      'Bay St / Albert St', 
+      'College St / Bay St',
+      'Dundas St W / Bay St',
+      'King St W / Bay St'
+    ];
   }
-}
-
-// Autocomplete functionality
-function setupAutocomplete() {
-  const input = document.getElementById('stationSearch');
-  const dropdown = document.getElementById('stationDropdown');
-  const errorMsg = document.getElementById('stationError');
-  let selectedStation = '';
-
-  input.addEventListener('input', function() {
-    const value = this.value.toLowerCase();
-    selectedStation = '';
-       errorMsg.style.display = 'none';
-    input.classList.remove('input-error');
-    
-    if (value.length < 2) {
-      dropdown.style.display = 'none';
-      return;
-    }
-
-    const filtered = STATIONS.filter(station => 
-      station.toLowerCase().includes(value)
-    );
-
-    if (filtered.length === 0) {
-      dropdown.style.display = 'none';
-      return;
-    }
-
-    dropdown.innerHTML = '';
-    filtered.forEach(station => {
-      const item = document.createElement('div');
-      item.className = 'dropdown-item';
-      item.textContent = station;
-      item.addEventListener('click', function() {
-        input.value = station;
-        selectedStation = station;
-        dropdown.style.display = 'none';
-        errorMsg.style.display = 'none';
-        input.classList.remove('input-error');
-      });
-      dropdown.appendChild(item);
-    });
-
-    dropdown.style.display = 'block';
-  });
-
-  // Hide dropdown when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = 'none';
-    }
-  });
-
-  // Form validation
-  const form = document.getElementById('stationForm');
-  form.addEventListener('submit', function(e) {
-    const stationValue = input.value.trim();
-    
-    // Check if the entered station exists in our list
-    if (!STATIONS.includes(stationValue)) {
-      e.preventDefault();
-      errorMsg.style.display = 'block';
-      input.classList.add('input-error');
-      showStatus('Please select a valid station from the list.', 'error');
-      return;
-    }
-
-    const number = document.getElementById('numberInput').value;
-    if (!number || !stationValue) {
-      e.preventDefault();
-      showStatus('Please fill out all fields.', 'error');
-      return;
-    }
-
-    // Show loading status
-    const submitButton = document.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<span class="loading-dots">Submitting</span>';
-    showStatus('Submitting your request...', 'loading');
-  });
 }
 
 // Initialize everything when page loads
@@ -350,6 +278,7 @@ window.addEventListener('pageshow', function(e) {
 
 </body>
 </html>
+
 
 
 
