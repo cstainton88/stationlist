@@ -222,11 +222,28 @@
   </div>
 </div>
 
+<div class="details">
+  <div class="detail-item">
+    <div class="detail-label">Dock Number:</div>
+    <div class="detail-value" id="numberValue">-</div>
+  </div>
+  <div class="detail-item">
+    <div class="detail-label">Station Name:</div>
+    <div class="detail-value" id="stationValue">-</div>
+  </div>
+  <!-- ADD THIS NEW SECTION -->
+  <div class="detail-item">
+    <div class="detail-label">Dock Issue:</div>
+    <div class="detail-value" id="issueValue">-</div>
+  </div>
+</div>
+ 
 <script>
 // Get data from URL parameters
 const urlParams = new URLSearchParams(window.location.search);
 const number = urlParams.get('number');
 const station = urlParams.get('station');
+const issue = urlParams.get('issue');
 const timestamp = urlParams.get('timestamp');
 
 // Display the data
@@ -235,6 +252,9 @@ if (number) {
 }
 if (station) {
   document.getElementById('stationValue').textContent = station;
+}
+if (issue) {
+  document.getElementById('issueValue').textContent = issue;
 }
 if (timestamp) {
   const date = new Date(timestamp);
@@ -246,6 +266,7 @@ if (!urlParams.get('success')) {
   window.location.href = 'https://cstainton88.github.io/stationlist/';
 }
 </script>
+
 
 </body>
 </html>
