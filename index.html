@@ -230,6 +230,62 @@
     75% { content: '...'; }
     100% { content: ''; }
   }
+
+/* Radio button styling */
+.radio-group {
+  margin-top: 10px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-transform: none;
+  font-weight: normal;
+  letter-spacing: normal;
+}
+
+.radio-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.radio-option input[type="radio"] {
+  width: auto;
+  height: 18px;
+  margin-right: 12px;
+  accent-color: #2E7D32;
+  transform: scale(1.2);
+}
+
+.radio-text {
+  color: white;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Mobile responsive for radio buttons */
+@media (max-width: 480px) {
+  .radio-option {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .radio-option input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.1);
+  }
+  
+  .radio-text {
+    font-size: 14px;
+  }
+}
+ 
 </style>
     
  
@@ -250,18 +306,38 @@
       target="hidden-iframe">
   
   <div class="form-group">
-    <label for="numberInput">Dock Number:</label>
-    <input type="number" id="numberInput" name="number" min="1" max="50" required />
-  </div>
+  <label for="numberInput">Dock Number:</label>
+  <input type="number" id="numberInput" name="number" min="1" max="50" required />
+</div>
 
-  <div class="form-group">
-    <label for="stationSearch">Station Name:</label>
-    <input type="text" id="stationSearch" name="station" placeholder="Start typing station name..." required autocomplete="off" />
-    <div id="stationDropdown" class="dropdown-list"></div>
-    <div id="stationError" class="error-message">Please select a valid station from the list.</div>
-  </div>
+<div class="form-group">
+  <label for="stationSearch">Station Name:</label>
+  <input type="text" id="stationSearch" name="station" placeholder="Start typing station name..." required autocomplete="off" />
+  <div id="stationDropdown" class="dropdown-list"></div>
+  <div id="stationError" class="error-message">Please select a valid station from the list.</div>
+</div>
 
-  <button type="submit">Submit</button>
+<!-- NEW DOCK ISSUE SECTION -->
+<div class="form-group">
+  <label>Dock Issue:</label>
+  <div class="radio-group">
+    <label class="radio-option">
+      <input type="radio" name="issue" value="Dock not accepting bike" required />
+      <span class="radio-text">Dock not accepting bike</span>
+    </label>
+    <label class="radio-option">
+      <input type="radio" name="issue" value="Dock not unlocking bike" required />
+      <span class="radio-text">Dock not unlocking bike</span>
+    </label>
+    <label class="radio-option">
+      <input type="radio" name="issue" value="Dock notably damaged" required />
+      <span class="radio-text">Dock notably damaged</span>
+    </label>
+  </div>
+  <div id="issueError" class="error-message">Please select a dock issue.</div>
+</div>
+
+<button type="submit">Submit</button>
 </form>
 
 <!-- Add hidden iframe -->
@@ -344,11 +420,18 @@ function setupAutocomplete() {
     }
   });
 
-  // Form validation AND redirect handling
+    // Form validation AND redirect handling
   const form = document.getElementById('stationForm');
   form.addEventListener('submit', function(e) {
     const stationValue = input.value.trim();
     const numberValue = document.getElementById('numberInput').value;
+    const issueValue = document.querySelector('input[name="issue"]:checked');
+    const issueError = document.getElementById('issueError');
+    
+    // Reset error states
+    errorMsg.style.display = 'none';
+    issueError.style.display = 'none';
+    input.classList.remove('input-error');
     
     // Check if the entered station exists in our list
     if (STATIONS.length > 0 && !STATIONS.includes(stationValue)) {
@@ -359,8 +442,12 @@ function setupAutocomplete() {
       return;
     }
 
-    if (!numberValue || !stationValue) {
+    // Check if all fields are filled
+    if (!numberValue || !stationValue || !issueValue) {
       e.preventDefault();
+      if (!issueValue) {
+        issueError.style.display = 'block';
+      }
       showStatus('Please fill out all fields.', 'error');
       return;
     }
@@ -371,18 +458,19 @@ function setupAutocomplete() {
     submitButton.innerHTML = '<span class="loading-dots">Submitting</span>';
     showStatus('Submitting your request...', 'loading');
 
-        // After form submits to hidden iframe, redirect after a delay
+    // After form submits to hidden iframe, redirect after a delay
     setTimeout(function() {
       const params = new URLSearchParams({
         success: 'true',
         number: numberValue,
         station: stationValue,
+        issue: issueValue.value,
         timestamp: new Date().toISOString()
       });
       window.location.href = 'https://cstainton88.github.io/stationlist/success.html?' + params.toString();
     }, 2000); // 2 second delay to allow form submission
   });
-} // MISSING CLOSING BRACE WAS HERE
+}
 
 function showStatus(message, type) {
   const statusElement = document.getElementById('status');
@@ -417,6 +505,7 @@ window.addEventListener('pageshow', function(e) {
 
 </body>
 </html>
+
 
 
 
